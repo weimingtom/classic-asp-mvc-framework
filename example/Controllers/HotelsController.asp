@@ -11,17 +11,15 @@ end class
 class cHotelsController
     
     private repository
-    public baseController
-
+    
     Public Sub Class_Initialize()
 		set baseController = (new cController).Init("Hotels")
         set repository = new cHotelsRepository
 	End Sub 
 
     public function ListByLetter(letter)
-        dim model
-        set model = new cListByLetterViewModel
-        model.FirstLetters = repository.GetAllFirstLettersOfCitites
+        dim model: set model = new cListByLetterViewModel
+        model.FirstLetters = repository.GetAllFirstLettersOfHotels
         model.Hotels = repository.GetByCityFirstLetter(letter)        
 
         set ListByLetter = View("List", model)        
@@ -29,17 +27,13 @@ class cHotelsController
 
     public function Edit_POST(hotel)
         repository.Update(hotel)
-        set Edit_POST = new cEmptyResult
+        set Edit_POST = EmptyContent()
     end function
 
     public function Add_POST(hotel)
         repository.Add(hotel)
-        set Add_POST = (new cJSONResult).Init(hotel)
-    end function
-
-    private function View(viewName, model)               
-        set View = baseController.View(viewname, model)
-    end function
+        set Add_POST = JSON(hotel)
+    end function    
     
     public function ModelBindForAction(actionName)        
         dim hotel
@@ -77,11 +71,37 @@ class cHotelsController
         end if
     end function    
 
+    public baseController
+
+    private Property Get ModelState
+        set ModelState = baseController.ModelState
+    end Property
+
+    private Property Get ControllerContext
+        set ControllerContext = baseController.ControllerContext
+    end Property
+    
     public function GetFiltersForAction(actionName)
         GetFiltersForAction = array((new cAuthFilter).Init("fulladmin"))
     end function
+
+    private function View(viewName, model)               
+        set View = baseController.View(viewname, model)
+    end function
+
+    private function Redirect(url)
+        set Redirect = baseController.Redirect(url)
+    end function
+
+    private function JSON(model)               
+        set JSON = baseController.JSON(model)
+    end function
+
+    private function EmptyContent()
+        set EmptyContent = baseController.EmptyContent(model)
+    end function
 end class
 
-
+'..............
 
 %>

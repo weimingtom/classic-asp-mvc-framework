@@ -7,79 +7,32 @@ class cLoginViewModel
 end class
 
 class cAccountController
-    
-    public baseController
+        
     private membershipProvider
     private formsAuthenticationService
-    
-    private Property Get ModelState
-        set ModelState = baseController.ModelState
-    end Property
-
-    private Property Get ControllerContext
-        set ControllerContext = baseController.ControllerContext
-    end Property
 
     Public Sub Class_Initialize()
 		set baseController = (new cController).Init("Account")     
         
-        set membershipProvider = (new cTravelMembershipProvider).Init(Application("TravelConnectionString"))
+        set membershipProvider = (new cMyMembershipProvider).Init(Application("TravelConnectionString"))
         set formsAuthenticationService = new cFormsAuthenticationService
 	End Sub 
 
     public function LogOn()
-        set model = new cLoginViewModel
+        dim model: set model = new cLoginViewModel
         set LogOn = View("Logon", model)
     end function
 
-    public function LogOn_POST(model)        
-        dim user        
+    public function LogOn_POST(model)                
         if membershipProvider.ValidateUser(model.Username, model.Password) then
-            formsAuthenticationService.SignIn model.Username, true
-
-            set user = membershipProvider.GetUser(model.Username)            
+            formsAuthenticationService.SignIn model.Username, true               
             
-            if (UCase(user.Status) <> "ACTIVE") then            
-                ModelState.AddError("Access denied.")
-                set LogOn_POST = View("Logon", model)
-                exit function
-            end if
-
-            dim adminRights, fullAdmin
-            if user.IsHasAdminRights then
-                adminRights = "yes"
-            else
-                adminRights = "no"
-            end if
-            if user.IsFullAdmin then
-                fullAdmin = "yes"
-            else
-                fullAdmin = "no"
-            end if
-            
-            dim urlToRedirect
-            urlToRedirect = "/ssl/upg.asp?ID=" & user.PartnerId & "&partnerName=" & user.PartnerName & "&adminRights=" & adminRights & "&fullAdmin=" & fullAdmin
-		
-            if user.IsHasCreditVSD = true then                  
-                if (not user.IsHasAdminRights) and (not user.IsFullAdmin) then                
-                    urlToRedirect = "/ssl/requestTouristVSD.asp"
-                end if                                        
-            end if                        
-            
-            set LogOn_POST = Redirect(urlToRedirect)
+            set LogOn_POST = Redirect("/hotels/")
         else            
             baseController.ModelState.AddError("Access denied.")            
             set LogOn_POST = View("Logon", model)
         end if
-    end function
-
-    private function View(viewName, model)               
-        set View = baseController.View(viewname, model)
-    end function
-
-    private function Redirect(url)
-        set Redirect = baseController.Redirect(url)
-    end function
+    end function   
 
     public function ModelBindForAction(actionName)                
         if LCase(actionName) = "logon_post" then
@@ -94,6 +47,33 @@ class cAccountController
     public function GetFiltersForAction(actionName)
         GetFiltersForAction = baseController.GetFiltersForAction(actionName)
     end function
+
+    public baseController
+
+    private Property Get ModelState
+        set ModelState = baseController.ModelState
+    end Property
+
+    private Property Get ControllerContext
+        set ControllerContext = baseController.ControllerContext
+    end Property
+
+    private function View(viewName, model)               
+        set View = baseController.View(viewname, model)
+    end function
+
+    private function Redirect(url)
+        set Redirect = baseController.Redirect(url)
+    end function
+
+    private function JSON(model)               
+        set JSON = baseController.JSON(model)
+    end function
+
+    private function EmptyContent()
+        set EmptyContent = baseController.EmptyContent(model)
+    end function
+
 end class
 
 

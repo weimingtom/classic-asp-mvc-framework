@@ -2,16 +2,12 @@
 <!-- #include virtual="/libs/Collections.asp" -->
 <!-- #include virtual="/libs/MVC.asp" -->
 <!-- #include virtual="/libs/ValidationBlock.asp" -->
-<!-- #include virtual="/libs/ADOConstants.asp" -->
 <!-- #include virtual="/libs/FormsAuthentication.asp" -->
-<!-- #include virtual="/libs/TravelMembershipProvider.asp" -->
-<!-- #include virtual="/libs/TravelFormsAuthentication.asp" -->
+<!-- #include virtual="/libs/MyMembershipProvider.asp" -->
+<!-- #include virtual="/libs/MyFormsAuthentication.asp" -->
 
-<!-- #include virtual="/ssl/Model/Entities.asp" -->
-<!-- #include virtual="/ssl/Model/HotelsRepository.asp" -->
-
-<!-- #include virtual="/ssl/Controllers/HotelsController.asp" -->
-<!-- #include virtual="/ssl/Controllers/AccountController.asp" -->
+<!-- #include virtual="/Controllers/HotelsController.asp" -->
+<!-- #include virtual="/Controllers/AccountController.asp" -->
 <%
 class cApp
     private baseApp
